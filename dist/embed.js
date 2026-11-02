@@ -22,9 +22,9 @@
 
    Usage in a Webflow Code Embed:
 
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.0/dist/embed.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.1/dist/embed.css">
      <div id="speero-personalization-hub"></div>
-     <script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.0/dist/embed.js" defer></script>
+     <script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.1/dist/embed.js" defer></script>
 
    Pin the version tag, never @main.
    ============================================================ */
