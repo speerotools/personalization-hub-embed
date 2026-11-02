@@ -22,9 +22,9 @@
 
    Usage in a Webflow Code Embed:
 
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.css">
      <div id="speero-personalization-hub"></div>
-     <script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.js" defer></script>
+     <script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.js" defer></script>
 
    Pin the version tag, never @main.
    ============================================================ */
@@ -190,8 +190,21 @@ function route() {
   else html = notFound();
   paint(html);
 }
+/* Native page content. The Webflow page carries its own H1, intro and a
+   plain-HTML directory of every opportunity and tool, so crawlers and no-JS
+   visitors get real content and real links. The embed hides them only once
+   its own view has rendered, so a failed fetch leaves them readable, and the
+   page shows one H1: the current view's. */
+function hideNative() {
+  document.querySelectorAll("[data-ph-native-head], [data-ph-native-dir]").forEach(el => {
+    el.style.display = "none";
+    el.setAttribute("aria-hidden", "true");
+  });
+}
+
 function paint(html) {
   root.innerHTML = `<div class="ph">${html}</div>`;
+  hideNative();
   const top = root.getBoundingClientRect().top + window.scrollY;
   if (window.scrollY > top) window.scrollTo(0, Math.max(0, top - 140));
 }

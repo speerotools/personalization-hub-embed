@@ -3,8 +3,8 @@
 TL;DR: one Code Embed on `/personalization-hub` runs the whole hub (overview, maturity assessment, opportunity explorer and detail, tools, tool detail, compare, explorer library). It is a port of Nick's prototype with the same copy on every route, minus the prototype's own header and footer. Data comes from `personalization-hub-data`, never from this repo.
 
 ```
-https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.js
-https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.css
+https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.js
+https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.css
 ```
 
 ## Webflow install
@@ -14,13 +14,17 @@ The page carries the shared Hub Nav component (Hub `personalization`, Section `o
 ```html
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.css">
 
 <div id="speero-personalization-hub"></div>
-<script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.4/dist/embed.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.js" defer></script>
 ```
 
 Pin the version tag. `@main` is mutable and jsDelivr caches it, so a rollback would not reach the site.
+
+## Native page content
+
+The Webflow page carries, outside the embed, a block marked `data-ph-native-head` (the page's H1 and intro) and a section marked `data-ph-native-dir` (Collection Lists of every opportunity and tool, linked to their CMS pages). Crawlers and no-JS visitors read those. The embed hides both once its first view has rendered, so with JavaScript the page shows exactly the prototype, with one H1. If the data fetch fails they stay visible.
 
 ## Navigation
 
@@ -59,7 +63,7 @@ The test page mounts the generated hub nav above the embed, reads the local data
 ## Releasing
 
 ```bash
-git tag v1.0.5 && git push --tags
+git tag v1.0.6 && git push --tags
 ```
 
 Then bump the tag in the Webflow embed and publish. CSS is scoped under `#speero-personalization-hub`, so it cannot reach the rest of the page.
