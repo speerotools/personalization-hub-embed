@@ -151,9 +151,20 @@ function nextStep(a) {
 }
 
 /* ---------- routing ---------- */
+// On a Webflow item page (/personalization-opportunities/<slug>) the item
+// comes from the URL, so one embed works on every CMS template page.
+function itemRoute() {
+  const path = location.pathname;
+  for (const [base, a] of [[CFG.opportunityBase, "opportunities"], [CFG.toolBase, "tools"]]) {
+    if (!base || !path.startsWith(base)) continue;
+    const slug = norm(path.slice(base.length)).replace(/^\//, "");
+    if (slug && slug !== "/") return a + "/" + slug;
+  }
+  return "";
+}
 function parseHash() {
   const [p, qs] = location.hash.replace(/^#\/?/, "").split("?");
-  const path = p || CFG.defaultRoute;
+  const path = p || itemRoute() || CFG.defaultRoute;
   return { parts: path.split("/").filter(Boolean), q: new URLSearchParams(qs || "") };
 }
 // Filter changes replace the history entry instead of adding one, like the
@@ -199,8 +210,12 @@ function route() {
     else if (a === "tools" && b && CFG.toolBase) to = CFG.toolBase + b;
     else if (P[a || "home"] && !here(P[a || "home"])) to = P[a || "home"] + (qs ? "#?" + qs : "");
     else if (a && !P[a] && P.home && !here(P.home)) to = P.home + location.hash;
-    if (to) { location.replace(to); return; }
+    if (to && !here(to.split("#")[0])) { location.replace(to); return; }
   }
+  // An item page whose slug is not in the data yet (a new CMS item ahead of
+  // the next sync) keeps its native content instead of showing a 404.
+  if (!location.hash.replace(/^#\/?/, "").split("?")[0] && itemRoute() &&
+      !(a === "opportunities" ? byId.opp[b] : byId.tool[b])) return;
   if (view) { view(); view = null; }
   syncHubNav(a || "");
   let html;

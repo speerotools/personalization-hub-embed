@@ -56,7 +56,7 @@
 #speero-personalization-hub .ph-btn-ghost{background:transparent;color:var(--ink);padding:.5rem .75rem;font-size:.875rem;font-weight:500}
 #speero-personalization-hub .ph-btn-ghost:hover{background:var(--wash)}
 #speero-personalization-hub .ph-btn-block{width:100%}
-#speero-personalization-hub .ph-textlink{min-height:44px;font-size:.875rem;font-weight:600;text-decoration:underline;text-underline-offset:4px;color:var(--ink);padding:0}
+#speero-personalization-hub .ph-textlink{display:inline-flex;align-items:center;min-height:44px;font-size:.875rem;font-weight:600;text-decoration:underline;text-underline-offset:4px;color:var(--ink);padding:0}
 #speero-personalization-hub .ph-on-ink{color:#fff}
 #speero-personalization-hub .ph-actions{display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem;margin-top:2rem}
 #speero-personalization-hub .ph-ico-sm{width:1rem;height:1rem;flex:none}
@@ -399,7 +399,8 @@
 #speero-personalization-hub .ph-page-hero .ph-kicker{color:var(--accent)}
 #speero-personalization-hub .ph-page-hero .ph-lede{max-width:36rem}
 #speero-personalization-hub .ph-btn-sm{min-height:40px;padding:.5rem .875rem;font-size:.8125rem;font-weight:500}
-#speero-personalization-hub .ph-actions .ph-textlink{font-weight:500}
+/* A secondary button beside a primary one matches its size, so the pair lines up */
+#speero-personalization-hub .ph-actions .ph-btn-hl ~ .ph-btn-outline{padding:.875rem 1.5rem;font-size:1.125rem;font-weight:600}
 
 /* assess: levels */
 #speero-personalization-hub .ph-levels-head h2{max-width:20rem}
