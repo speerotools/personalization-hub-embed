@@ -20,7 +20,7 @@ The page carries the shared Hub Nav component (Hub `personalization`, Section `o
 <script src="https://cdn.jsdelivr.net/gh/speerotools/personalization-hub-embed@v1.0.5/dist/embed.js" defer></script>
 ```
 
-Pin the version tag. `@main` is mutable and jsDelivr caches it, so a rollback would not reach the site.
+Pin a version: a release tag, or a full commit hash (equally immutable on jsDelivr). `@main` is mutable and jsDelivr caches it, so a rollback would not reach the site. The live page is pinned to `@9e095ac9e5afbbf6320e47671b9823136ae55ae6`, because tags `v1.0.4` to `v1.0.6` all point at the earlier commit `927cd49`. When tagging, create the tag on the newest commit of `main`.
 
 ## Native page content
 
