@@ -38,6 +38,8 @@
 #speero-personalization-hub .ph-hero-h{font-size:var(--hero);line-height:1.02;font-weight:800;letter-spacing:-.038em;margin-bottom:1.5rem;text-wrap:balance;max-width:40rem}
 #speero-personalization-hub .ph-display{font-size:var(--display);line-height:1.12;font-weight:800;letter-spacing:-.038em;margin-bottom:.75rem;text-wrap:balance;max-width:48rem}
 #speero-personalization-hub .ph-pink{color:var(--pink)}
+/* Webflow's normalize makes summary a block, which drops the disclosure triangle */
+#speero-personalization-hub summary{display:list-item}
 #speero-personalization-hub .ph-lede{font-size:1.0625rem;font-weight:300;line-height:1.625;color:var(--muted);max-width:32rem;text-wrap:pretty}
 #speero-personalization-hub .ph-lede-sm{font-size:.875rem;font-weight:300;line-height:1.625;color:var(--muted);max-width:36rem;margin-bottom:2rem}
 #speero-personalization-hub .ph-small{font-size:.75rem;font-weight:300;color:var(--muted);line-height:1.6}
@@ -227,9 +229,9 @@
 #speero-personalization-hub .ph-stepnav{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.5rem 0 2rem}
 #speero-personalization-hub .ph-stepnav button{display:inline-flex;align-items:center;gap:.5rem;min-height:40px;border-radius:999px;padding:0 .875rem;background:var(--paper);box-shadow:var(--shadow);font-size:.75rem;font-weight:500}
 #speero-personalization-hub .ph-stepnav span{color:var(--pink);font-weight:700}
-#speero-personalization-hub .ph-step-list{display:grid;gap:1rem}
-#speero-personalization-hub .ph-step{background:var(--navy);color:#fff;border-radius:1.75rem;padding:1.5rem;scroll-margin-top:8rem;font-size:.9375rem;font-weight:300;line-height:1.625}
-@media (min-width:768px){#speero-personalization-hub .ph-step{padding:2rem 2.5rem}}
+#speero-personalization-hub .ph-step-list{display:grid;gap:1.25rem;max-width:56rem;margin-left:auto;margin-right:auto}
+#speero-personalization-hub .ph-step{background:var(--navy);color:#fff;border-radius:1.75rem;padding:1.25rem;scroll-margin-top:8rem;font-size:.9375rem;font-weight:300;line-height:1.625}
+@media (min-width:640px){#speero-personalization-hub .ph-step{padding:2rem}}
 #speero-personalization-hub .ph-step>*+*{margin-top:1rem}
 #speero-personalization-hub .ph-step-head{display:flex;gap:1rem;align-items:center;margin-bottom:1.5rem}
 #speero-personalization-hub .ph-step-n{display:inline-flex;flex:none;width:2.5rem;height:2.5rem;border-radius:50%;align-items:center;justify-content:center;background:var(--pink);font-weight:700;font-size:.875rem}
@@ -294,7 +296,7 @@
 #speero-personalization-hub .ph-tray a{color:var(--yellow);font-weight:600}
 #speero-personalization-hub .ph-tool-head{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
 #speero-personalization-hub .ph-tool-head .ph-display{margin:0}
-#speero-personalization-hub .ph-tool>.ph-lede{max-width:44rem;margin-bottom:.5rem}
+#speero-personalization-hub .ph-tool>.ph-lede{max-width:42rem;font-size:1.125rem;line-height:1.75rem;margin-bottom:.5rem}
 #speero-personalization-hub .ph-claim{margin:1.5rem 0 0;border-left:3px solid var(--pink);background:var(--paper);border-radius:0 1rem 1rem 0;padding:1rem 1.25rem;font-size:.875rem;font-weight:300;line-height:1.6}
 #speero-personalization-hub .ph-claim-k{font-size:.6875rem;font-weight:700;letter-spacing:.08em;color:var(--pink);margin-bottom:.5rem}
 #speero-personalization-hub .ph-claim a{display:inline-block;margin-top:.5rem;font-size:.75rem;color:var(--muted)}
@@ -475,3 +477,117 @@
 #speero-personalization-hub .ph-canvas>div{background:var(--ink);padding:1.25rem;border-radius:.75rem;font-size:.875rem;font-weight:300}
 #speero-personalization-hub .ph-canvas>div.is-pink{background:var(--pink)}
 #speero-personalization-hub .ph-canvas-k{font-size:.625rem;font-weight:600;opacity:.75}
+/* Matched to the prototype's computed styles at 1280px (generated, then reviewed). */
+#speero-personalization-hub .is-pink{border-radius:20px;padding:24px}
+#speero-personalization-hub .is-pink p{line-height:22.75px}
+#speero-personalization-hub .ph-app{border-radius:8px;padding:20px}
+#speero-personalization-hub .ph-app a{line-height:20px}
+#speero-personalization-hub .ph-app p{color:rgb(88, 99, 115);font-weight:300;line-height:20px}
+#speero-personalization-hub .ph-arms h3{line-height:24px}
+#speero-personalization-hub .ph-arms p{font-weight:400}
+#speero-personalization-hub .ph-aside label{font-weight:400;line-height:20px}
+#speero-personalization-hub .ph-aside-top span{font-size:17px;line-height:26.35px}
+#speero-personalization-hub .ph-bullets li{font-size:14px}
+#speero-personalization-hub .ph-canvas p{line-height:22.75px}
+#speero-personalization-hub .ph-card-go span{font-size:14px;line-height:20px}
+#speero-personalization-hub .ph-card-opp dd{color:rgb(197, 205, 216);font-size:14px;font-weight:400;line-height:22.75px}
+#speero-personalization-hub .ph-card-opp dt{font-weight:700;line-height:16px}
+#speero-personalization-hub .ph-card-opp h3{font-size:20px;letter-spacing:-0.76px;line-height:27.5px}
+#speero-personalization-hub .ph-card-tool h3{line-height:28px}
+#speero-personalization-hub .ph-card-tool p{color:rgb(88, 99, 115)}
+#speero-personalization-hub .ph-card-tool-foot a{line-height:20px}
+#speero-personalization-hub .ph-card-tool-head h3{line-height:28px}
+#speero-personalization-hub .ph-checks li{line-height:22.75px}
+#speero-personalization-hub .ph-claim{border-radius:8px}
+#speero-personalization-hub .ph-claim a{font-size:14px;line-height:20px}
+#speero-personalization-hub .ph-claim p{color:rgb(88, 99, 115);line-height:22.75px}
+#speero-personalization-hub .ph-compare-empty p{line-height:24.8px}
+#speero-personalization-hub .ph-formats li{font-weight:400;line-height:20px}
+#speero-personalization-hub .ph-levels h3{font-size:14px;line-height:20px}
+#speero-personalization-hub .ph-levels p{font-weight:500;line-height:16px}
+#speero-personalization-hub .ph-myths h2{font-size:18px;font-weight:600;line-height:28px}
+#speero-personalization-hub .ph-myths p{font-size:14px;line-height:22.75px}
+#speero-personalization-hub .ph-opp-related h2{font-weight:700;letter-spacing:normal;line-height:37.2px}
+#speero-personalization-hub .ph-opp-tools h2{font-weight:700;letter-spacing:normal;line-height:37.2px}
+#speero-personalization-hub .ph-pick{border-radius:8px}
+#speero-personalization-hub .ph-pillars h3{font-size:18px;font-weight:700;line-height:28px}
+#speero-personalization-hub .ph-prevnext a{font-weight:400;line-height:20px}
+#speero-personalization-hub .ph-principle div{color:rgb(124, 132, 128)}
+#speero-personalization-hub .ph-quad dt{font-size:16px;line-height:24.8px}
+#speero-personalization-hub .ph-results-bar p{line-height:20px}
+#speero-personalization-hub .ph-startcard{padding:28px}
+#speero-personalization-hub .ph-step{border-radius:28px}
+#speero-personalization-hub .ph-step strong{font-size:17px;line-height:27.625px}
+#speero-personalization-hub .ph-step summary{font-size:14px;line-height:20px}
+#speero-personalization-hub .ph-step-head h2{letter-spacing:-0.912px;line-height:37.2px}
+#speero-personalization-hub .ph-tool-plain h2{font-size:18px;font-weight:700;letter-spacing:normal;line-height:28px}
+#speero-personalization-hub .ph-tool-sec{border-radius:8px}
+#speero-personalization-hub .ph-tool-sec h2{font-size:18px;font-weight:700;letter-spacing:normal;line-height:28px}
+#speero-personalization-hub .ph-tool-sec p{font-size:16px;line-height:24.8px}
+#speero-personalization-hub .ph-trio dt{font-size:16px;line-height:24.8px}
+#speero-personalization-hub .ph-two h2{font-size:18px;font-weight:700;letter-spacing:normal;line-height:28px}
+#speero-personalization-hub a.ph-back{font-size:14px;font-weight:500;line-height:20px}
+#speero-personalization-hub a.ph-btn{font-weight:600}
+#speero-personalization-hub a.ph-chip{border-radius:12px;font-size:14px;font-weight:400;line-height:20px}
+#speero-personalization-hub a.ph-src{color:rgb(124, 132, 128);font-size:13px;font-weight:500;line-height:20.15px}
+#speero-personalization-hub button.ph-btn{font-weight:600}
+#speero-personalization-hub div.ph-app-name{font-size:16px;line-height:24.8px}
+#speero-personalization-hub div.ph-canvas-k{font-size:12px;letter-spacing:0.96px;line-height:16px}
+#speero-personalization-hub div.ph-card-role{line-height:17.05px}
+#speero-personalization-hub div.ph-claim-k{color:rgb(124, 132, 128);font-size:11px;letter-spacing:0.88px;line-height:17.05px}
+#speero-personalization-hub div.ph-connected{color:rgb(138, 144, 150);font-size:13px;line-height:20.15px}
+#speero-personalization-hub div.ph-gantt-name{font-size:16px;line-height:24.8px}
+#speero-personalization-hub div.ph-kicker{line-height:16px}
+#speero-personalization-hub div.ph-opt-l{line-height:24.8px}
+#speero-personalization-hub div.ph-pick-name{font-size:16px;line-height:24.8px}
+#speero-personalization-hub div.ph-pick-sum{font-size:14px;line-height:20px}
+#speero-personalization-hub div.ph-principle-h{color:rgb(20, 40, 68);font-size:20px;font-weight:600;line-height:27.5px}
+#speero-personalization-hub div.ph-principle-k{color:rgb(88, 99, 115);line-height:17.05px}
+#speero-personalization-hub div.ph-small{color:rgb(124, 132, 128);font-weight:400;line-height:16px}
+#speero-personalization-hub label.ph-cmp{font-size:14px;font-weight:400;line-height:20px}
+#speero-personalization-hub li.on{line-height:20px}
+#speero-personalization-hub p.ph-arm-note{font-weight:400;line-height:16px}
+#speero-personalization-hub p.ph-card-kicker{font-size:12px;letter-spacing:0.96px;line-height:16px}
+#speero-personalization-hub p.ph-card-sum{line-height:22.75px}
+#speero-personalization-hub p.ph-count{line-height:20px}
+#speero-personalization-hub p.ph-kicker{line-height:16px}
+#speero-personalization-hub p.ph-lede{font-size:17px;line-height:27.625px}
+#speero-personalization-hub p.ph-meta{font-size:14px;font-weight:500;line-height:20px}
+#speero-personalization-hub p.ph-myth-t{font-size:16px;font-weight:500;line-height:24.8px}
+#speero-personalization-hub p.ph-pillars-d{font-weight:400}
+#speero-personalization-hub p.ph-pillars-label{line-height:20px}
+#speero-personalization-hub p.ph-pillars-q{line-height:24.8px}
+#speero-personalization-hub p.ph-signal-k{font-size:12px;font-weight:600;letter-spacing:normal;line-height:16px}
+#speero-personalization-hub p.ph-small{font-size:14px}
+#speero-personalization-hub p.ph-startcard-h{color:rgb(20, 40, 68);line-height:28px}
+#speero-personalization-hub p.ph-step-k{font-size:12px;letter-spacing:0.96px;line-height:16px}
+#speero-personalization-hub p.ph-step-note{font-weight:400}
+#speero-personalization-hub p.ph-steps-label{line-height:16px}
+#speero-personalization-hub p.ph-steps-note{line-height:19.5px}
+#speero-personalization-hub p.ph-steps-win{line-height:20px}
+#speero-personalization-hub span.ph-badge{line-height:17.05px}
+#speero-personalization-hub span.ph-chip{border-radius:4px;font-size:14px;font-weight:400;line-height:20px}
+#speero-personalization-hub span.ph-logo-name{line-height:13.95px}
+/* Layout and card shapes matched to the prototype at 1280px */
+@media (min-width:1100px){#speero-personalization-hub .ph-grid-opps,#speero-personalization-hub .ph-grid-tools:not(.ph-grid-2){grid-template-columns:repeat(2,1fr)}}
+#speero-personalization-hub .ph-grid-opps,#speero-personalization-hub .ph-grid-tools{gap:1.25rem}
+#speero-personalization-hub .ph-levels li{border-radius:0;padding:1rem;box-shadow:none;border-top:2px solid var(--yellow)}
+#speero-personalization-hub .ph-signals li{border-radius:1.25rem}
+#speero-personalization-hub .ph-trio div,#speero-personalization-hub .ph-quad div{border:1px dashed rgba(255,184,0,.6);border-radius:1.25rem}
+#speero-personalization-hub .ph-arms div{border-color:rgba(255,255,255,.25);border-radius:1.25rem}
+#speero-personalization-hub .ph-two section,#speero-personalization-hub .ph-tool-sec{border-radius:.5rem;box-shadow:none;border:1px solid var(--line)}
+#speero-personalization-hub .ph-bullets li{color:var(--muted);line-height:20px}
+#speero-personalization-hub .ph-myths{grid-template-columns:1fr}
+#speero-personalization-hub .ph-myths article{border-radius:1.25rem;padding:1.75rem}
+#speero-personalization-hub .ph-myths article p:last-child{font-size:14px}
+#speero-personalization-hub .ph-canvas>div{border-radius:1.25rem;padding:1.5rem}
+#speero-personalization-hub .ph-canvas>div div{padding:0;border-radius:0;background:none}
+#speero-personalization-hub .ph-gantt{background:none;border-radius:0;padding:0;box-shadow:none}
+#speero-personalization-hub .ph-opp-tools a.ph-chip{padding:8px 12px}
+#speero-personalization-hub .ph-tool-plain span.ph-chip{padding:2px 8px;border-radius:4px;font-size:14px}
+#speero-personalization-hub div.ph-connected{padding-top:12px}
+#speero-personalization-hub .ph-myths{max-width:none}
+#speero-personalization-hub .ph-tool-sec.ph-tool-best{background:var(--ink);border-color:var(--ink)}
+#speero-personalization-hub .ph-step summary{font-size:14px}
+#speero-personalization-hub .ph-claim{max-width:42rem}
+#speero-personalization-hub .ph-page-hero .ph-lede{max-width:42rem}
