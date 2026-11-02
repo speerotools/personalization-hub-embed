@@ -26,11 +26,23 @@ Pin a version: a release tag, or a full commit hash (equally immutable on jsDeli
 
 The Webflow page carries, outside the embed, a block marked `data-ph-native-head` (the page's H1 and intro) and a section marked `data-ph-native-dir` (Collection Lists of every opportunity and tool, linked to their CMS pages). Crawlers and no-JS visitors read those. The embed hides both once its first view has rendered, so with JavaScript the page shows exactly the prototype, with one H1. If the data fetch fails they stay visible.
 
-## Navigation
+## Pages and navigation
 
-The prototype's top nav (Personalization, Assess, Explore, Tools) is now the second row of the shared hub nav: Overview, Assess, Explore, Tools. Those links are hash routes on this one page (`/personalization-hub#/assess` and so on). The embed sets the hub nav's `data-section` and `aria-current` on every route change, so the right section stays underlined. The hub nav source is `Research Recipe Hub/hub-nav/build.py`.
+Like the Research hub, each main view is its own Webflow page, so search engines see it as a page:
 
-Routes: `#/`, `#/assess`, `#/opportunities`, `#/opportunities/<id>`, `#/tools`, `#/tools/<id>`, `#/compare`, `#/explore`, `#/guide`, `#/research`, `#/blueprints`. The last three are reachable by URL only, as in the prototype once its footer is gone.
+| View | URL | Embed config |
+|---|---|---|
+| Overview | `/personalization-hub` | `defaultRoute: ""` |
+| Assess | `/personalization-assessment` | `defaultRoute: "assess"` |
+| Explore | `/personalization-opportunities` | `defaultRoute: "opportunities"` |
+| Tools | `/personalization-tools` | `defaultRoute: "tools"` |
+| Opportunity, tool | `/personalization-opportunities/<slug>`, `/personalization-tools/<slug>` | CMS template pages |
+
+Every page sets the same `pages` map, so links between views use real URLs. Filters stay in the hash on their own page (`/personalization-opportunities#?stage=discovery`), which keeps refresh and Back working and keeps filtered variants out of the index. Compare, the library explorer, guide, research and blueprints stay hash views on the Overview page (`/personalization-hub#/compare`). Old hash links such as `/personalization-hub#/assess` redirect to the real page.
+
+The prototype's top nav (Personalization, Assess, Explore, Tools) is the second row of the shared hub nav, linking to those pages. The embed also keeps the nav's `data-section` and `aria-current` in step with the view. The hub nav source is `Research Recipe Hub/hub-nav/build.py`.
+
+With `pages: null` (the default, and `test-hub.html`) every view is a hash route on one page. `test/*.html` mirrors the Webflow setup with one local page per view.
 
 ## Config
 
@@ -44,6 +56,7 @@ Routes: `#/`, `#/assess`, `#/opportunities`, `#/opportunities/<id>`, `#/tools`, 
 | `defaultRoute` | `""` | View to open with no hash |
 | `opportunityBase` | `null` | `null` keeps opportunity detail inside the embed. Set to `"/personalization-opportunities/"` once the CMS template is designed |
 | `toolBase` | `null` | Same for tools, `"/personalization-tools/"` |
+| `pages` | `null` | `{ home, assess, opportunities, tools }` page URLs. See Pages and navigation |
 
 Switch both bases on together with the CMS templates. Until then the CMS item pages are unstyled, and once they are styled the same content should not also live at a hash URL.
 

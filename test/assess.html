@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personalization Hub test: assess page</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>document.write('<link rel="stylesheet" href="../dist/embed.css?v=' + Date.now() + '">')</script>
+<style>body{margin:0;background:#F3F3EF}</style>
+<!-- One page per main view, like the Webflow pages. Serve the Speero folder:
+     python3 -m http.server 8766 --directory ~/Documents/Speero -->
+<div data-hubnav="" data-current="personalization" data-section="assess" data-ground="light" id="hubnav"></div>
+<div data-ph-native-head><h1>Native heading for the assess page</h1></div>
+<div id="speero-personalization-hub"></div>
+<section data-ph-native-dir><a href="#">native directory</a></section>
+<script>
+  const base = location.pathname.replace(/[^/]*$/, "");
+  window.PERSONALIZATION_HUB_CONFIG = {
+    dataUrl: "../../personalization-hub-data/personalization-hub.json",
+    defaultRoute: "assess",
+    pages: { home: base + "home.html", assess: base + "assess.html", opportunities: base + "opportunities.html", tools: base + "tools.html" }
+  };
+  const boot = () => { const s = document.createElement("script"); s.src = "../dist/embed.js?v=" + Date.now(); document.body.appendChild(s); };
+  fetch("../../../Research%20Recipe%20Hub/hub-nav/hub-nav-embed.html").then(r => r.text())
+    .then(html => { document.getElementById("hubnav").innerHTML = html; }).finally(boot);
+</script>

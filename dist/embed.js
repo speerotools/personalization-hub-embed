@@ -41,7 +41,13 @@ const CFG = Object.assign({
   // Set to the CMS bases once the template pages are designed, so each item
   // has one indexed address instead of two competing ones.
   opportunityBase: null,   // "/personalization-opportunities/"
-  toolBase:        null    // "/personalization-tools/"
+  toolBase:        null,   // "/personalization-tools/"
+  // Real URLs for the main views, one Webflow page each, so search engines
+  // see them as pages: { home, assess, opportunities, tools }. Each page sets
+  // defaultRoute to its own view. null keeps every view on one page as
+  // hash routes (local testing). Views without a page of their own (compare,
+  // explore, guide, research, blueprints) stay hash routes on the home page.
+  pages: null
 }, window.PERSONALIZATION_HUB_CONFIG || {});
 
 const root = document.getElementById(CFG.mount);
@@ -62,6 +68,15 @@ const lbl = (k, id) => (T[k][id] || {}).label || "";
 const pad = n => String(n).padStart(2, "0");
 const oppHref = id => esc(CFG.opportunityBase ? CFG.opportunityBase + id : "#/opportunities/" + id);
 const toolHref = id => esc(CFG.toolBase ? CFG.toolBase + id : "#/tools/" + id);
+const norm = p => String(p || "").replace(/\/+$/, "") || "/";
+const here = p => !!p && norm(location.pathname) === norm(p);
+// Where a view lives. On its own page, filters stay in the hash ("#?stage=x").
+function viewHref(name, qs) {
+  const P = CFG.pages, q = qs ? "?" + qs : "";
+  if (P && P[name]) return here(P[name]) ? (q ? "#" + q : "#") : P[name] + (q ? "#" + q : "");
+  if (P && P.home && !here(P.home)) return P.home + "#/" + (name === "home" ? "" : name) + q;
+  return "#/" + (name === "home" ? "" : name) + q;
+}
 
 /* Lucide icons, paths copied from the prototype bundle. */
 const ICONS = {
@@ -137,8 +152,8 @@ function nextStep(a) {
 
 /* ---------- routing ---------- */
 function parseHash() {
-  const h = location.hash.replace(/^#\/?/, "") || CFG.defaultRoute;
-  const [path, qs] = h.split("?");
+  const [p, qs] = location.hash.replace(/^#\/?/, "").split("?");
+  const path = p || CFG.defaultRoute;
   return { parts: path.split("/").filter(Boolean), q: new URLSearchParams(qs || "") };
 }
 // Filter changes replace the history entry instead of adding one, like the
@@ -147,7 +162,9 @@ function setQuery(base, obj) {
   const q = new URLSearchParams();
   Object.keys(obj).forEach(k => { if (obj[k] !== "" && obj[k] != null && obj[k] !== "all") q.set(k, obj[k]); });
   const s = q.toString();
-  history.replaceState(history.state, "", "#/" + base + (s ? "?" + s : ""));
+  const own = CFG.pages && here(CFG.pages[base]);
+  history.replaceState(history.state, "", own ? location.pathname + location.search + (s ? "#?" + s : "")
+    : "#/" + base + (s ? "?" + s : ""));
 }
 
 /* The shared hub nav (Webflow "Hub Nav" component) carries the four
@@ -167,12 +184,23 @@ function syncHubNav(first) {
 }
 
 let view = null;   // current view's teardown, if any
-let lastExplore = "#/opportunities";
+let lastExplore = null;  // set on first use, once CFG.pages is known
 
 function route() {
   if (!D) return;
   const { parts, q } = parseHash();
   const [a, b] = parts;
+  // An old hash link (#/assess, #/opportunities/<id>) or a view that belongs
+  // on another page: go there instead of rendering it here twice.
+  const P = CFG.pages, qs = q.toString();
+  if (P) {
+    let to = null;
+    if (a === "opportunities" && b && CFG.opportunityBase) to = CFG.opportunityBase + b;
+    else if (a === "tools" && b && CFG.toolBase) to = CFG.toolBase + b;
+    else if (P[a || "home"] && !here(P[a || "home"])) to = P[a || "home"] + (qs ? "#?" + qs : "");
+    else if (a && !P[a] && P.home && !here(P.home)) to = P.home + location.hash;
+    if (to) { location.replace(to); return; }
+  }
   if (view) { view(); view = null; }
   syncHubNav(a || "");
   let html;
@@ -253,7 +281,7 @@ const compareBox = id => {
   const on = store.compared.includes(id), full = store.compared.length >= 3;
   return `<label class="ph-cmp${full && !on ? " is-off" : ""}"><input type="checkbox" data-compare="${esc(id)}"${on ? " checked" : ""}${full && !on ? " disabled" : ""}${full ? ' aria-describedby="compare-limit"' : ""}>Compare</label>`;
 };
-const compareTray = () => store.compared.length ? `<div class="ph-tray"><span>${store.compared.length} selected to compare</span><a href="#/compare">Open comparison</a></div>` : "";
+const compareTray = () => store.compared.length ? `<div class="ph-tray"><span>${store.compared.length} selected to compare</span><a href="${viewHref("compare")}">Open comparison</a></div>` : "";
 
 function pageHero(kicker, title, lede) {
   return `<header class="ph-page-hero">${kicker ? `<div class="ph-kicker">${kicker}</div>` : ""}
@@ -274,17 +302,17 @@ function home() {
       <p class="ph-kicker">The personalization hub</p>
       <h1 class="ph-hero-h">Create experiences <span class="ph-pink">customers love.</span></h1>
       <p class="ph-lede">Know what you can use. Understand the need. Make the response worth it. Learn whether it helped. A practical place to work through five practical steps and choose your next move.</p>
-      <div class="ph-actions"><a class="ph-btn ph-btn-hl" href="#/assess">Find your starting point</a><a class="ph-textlink" href="#/opportunities">Explore use cases</a></div>
+      <div class="ph-actions"><a class="ph-btn ph-btn-hl" href="${viewHref("assess")}">Find your starting point</a><a class="ph-textlink" href="${viewHref("opportunities")}">Explore use cases</a></div>
     </div><div class="ph-hero-steps">${fiveSteps(false)}</div></header>
     <ol class="ph-rows">
       ${row(1, "Where you stand", "Build a program that can deliver useful personalization.",
         "Assess Strategy &amp; culture, People &amp; skills, Data &amp; tools, and Process &amp; methodology. Find the foundations to strengthen next.",
-        "Start the assessment", "#/assess", pillarMap(false), "We won’t contact you unless you ask us to.")}
+        "Start the assessment", viewHref("assess"), pillarMap(false), "We won’t contact you unless you ask us to.")}
       ${row(2, "What to personalize next", "See how a signal becomes a useful response.", "Or skip the audit and browse every use case.",
-        "Explore opportunities", "#/opportunities",
+        "Explore opportunities", viewHref("opportunities"),
         `<span class="ph-sigs">${sig("New visitor", "Show the categories that matter first")}${sig("Repeat visitor", "Pick up in the section they left")}</span>`, "", true)}
       ${row(3, "What you’d need", "Once you know the move, see which tools can actually change the page.",
-        "Technology that can change what someone sees. Not another analytics dashboard.", "Browse tools", "#/tools",
+        "Technology that can change what someone sees. Not another analytics dashboard.", "Browse tools", viewHref("tools"),
         `<span class="ph-logos">${D.tools.slice(0, 6).map(t => `<span class="ph-logo-tile"><span class="ph-logo-box">${logo(t)}</span><span class="ph-logo-name">${esc(t.name)}</span></span>`).join("")}</span>`)}
     </ol></div>`;
 }
@@ -331,7 +359,7 @@ function mountAssess() {
         <p class="ph-small">Your answers place you in one of five capability levels, with a score out of ${MAX()}. Each of the four pillars contributes up to 10 points. These self-assessment levels are a guide to your next step, not an industry benchmark or a comparable score to Speero’s experimentation audit. Scores from the earlier audit are not comparable.</p></div>
         <ol class="ph-levels">${D.levels.map(l => `<li>${bars(l.bars)}<h3>${esc(l.label)}</h3><p>${l.min}–${l.max} points</p></li>`).join("")}</ol>
         <div class="ph-actions"><button type="button" class="ph-btn ph-btn-hl" data-start>${ans ? "Continue assessment" : "Find your starting point"}</button>
-          <a class="ph-textlink" href="#/opportunities">Explore personalization examples</a><a class="ph-textlink" href="#/tools">Browse tools</a></div>
+          <a class="ph-textlink" href="${viewHref("opportunities")}">Explore personalization examples</a><a class="ph-textlink" href="${viewHref("tools")}">Browse tools</a></div>
       </section></div>`;
   }
   function quiz() {
@@ -363,7 +391,7 @@ function mountAssess() {
           <p>${esc(it ? it.guidance : "You reported consistent practice on all five questions. Keep checking it against evidence.")}</p></section>`;
       }).join("")}
         <section class="ph-start-here"><p class="ph-kicker">Start here</p><h2>${esc(ns.headline)}</h2><p>${esc(ns.body)}</p></section></div>
-      <div class="ph-actions"><a class="ph-btn ph-btn-hl" href="#/opportunities">Explore opportunities</a><a class="ph-btn ph-btn-outline" href="#/tools">Browse tools</a></div></div>`;
+      <div class="ph-actions"><a class="ph-btn ph-btn-hl" href="${viewHref("opportunities")}">Explore opportunities</a><a class="ph-btn ph-btn-outline" href="${viewHref("tools")}">Browse tools</a></div></div>`;
   }
 
   function onClick(e) {
@@ -425,7 +453,7 @@ function mountOpportunities(q) {
       : `<p class="ph-empty">No opportunities match. Try a different signal or reset the filters.</p>`) +
       (r.length > f.shown ? `<button type="button" class="ph-btn ph-btn-outline ph-more" data-more>Show more opportunities</button>` : "");
     setQuery("opportunities", Object.assign({}, f, { shown: f.shown > 12 ? f.shown : "" }));
-    lastExplore = location.hash;
+    lastExplore = location.pathname + location.hash;
   }
   function onInput(e) {
     const k = e.target.dataset && e.target.dataset.f;
@@ -460,7 +488,7 @@ function opportunity(o) {
   const i = D.opportunities.indexOf(o), prev = D.opportunities[i - 1], next = D.opportunities[i + 1];
   const related = o.related.slice(0, 3).map(id => byId.opp[id]).filter(Boolean);
   return `<article class="ph-opp">
-    <a class="ph-back" href="${esc(lastExplore)}">← All opportunities</a>
+    <a class="ph-back" href="${esc(lastExplore || viewHref("opportunities"))}">← All opportunities</a>
     <header class="ph-opp-head"><p class="ph-kicker">${esc(lbl("needs", o.situation))} · ${esc(lbl("stages", o.stage))}</p>
       <h1 class="ph-display">${esc(o.title)}</h1><p class="ph-lede">${esc(o.summary)}</p>
       <p class="ph-small">Illustrative use case · ${o.models.length ? o.models.map(m => esc(lbl("models", m))).join(", ") : "Across business models"}</p></header>
@@ -532,11 +560,11 @@ function mountTools(q) {
 function tool(t) {
   const on = store.compared.includes(t.id), full = store.compared.length >= 3;
   return `<article class="ph-tool">
-    <a class="ph-back" href="#/explore">← The explorer</a>
+    <a class="ph-back" href="${viewHref("explore")}">← The explorer</a>
     <div class="ph-tool-head">${logo(t, "lg")}<div><div class="ph-card-role">${esc(lbl("roles", t.role))}</div><h1 class="ph-display">${esc(t.name)}</h1></div></div>
     <p class="ph-lede">${esc(t.summary)}</p><p class="ph-small">${esc(t.connected)}</p>
     ${t.source && safeUrl(t.source.url) ? `<blockquote class="ph-claim"><div class="ph-claim-k">THE VENDOR’S CLAIM</div><p>“${esc(t.source.claim)}”</p><a href="${esc(t.source.url)}" target="_blank" rel="noopener noreferrer">${esc(host(t.source.url))}</a></blockquote>` : ""}
-    <div class="ph-actions"><button type="button" class="ph-btn ph-btn-outline ph-btn-sm" data-toggle="${esc(t.id)}"${full && !on ? " disabled" : ""}${full ? ' aria-describedby="compare-limit"' : ""}>${on ? "Remove from compare" : "Add to compare"}</button><a class="ph-btn ph-btn-solid ph-btn-sm" href="#/compare">Open comparison</a></div>
+    <div class="ph-actions"><button type="button" class="ph-btn ph-btn-outline ph-btn-sm" data-toggle="${esc(t.id)}"${full && !on ? " disabled" : ""}${full ? ' aria-describedby="compare-limit"' : ""}>${on ? "Remove from compare" : "Add to compare"}</button><a class="ph-btn ph-btn-solid ph-btn-sm" href="${viewHref("compare")}">Open comparison</a></div>
     ${compareLimit()}
     <div class="ph-two"><section><h2>Where it’s strong</h2><ul class="ph-bullets">${t.strengths.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>
       <section><h2>Where it runs out</h2><ul class="ph-bullets">${t.limits.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section></div>
@@ -555,7 +583,7 @@ function compare() {
   return `<div class="ph-compare"><h1 class="ph-hero-h ph-hero-wide">Compare tools</h1>
     <p class="ph-lede-sm">Up to three. The point is not a winner — it is whether a tool you already run can deliver the decision record. Inclusion is not an endorsement.</p>
     ${!ts.length ? `<div class="ph-compare-empty"><p>Nothing selected yet.</p><div class="ph-grid-pick">${D.tools.map(t => `<button type="button" class="ph-pick" data-toggle="${esc(t.id)}"><div class="ph-pick-name">${logo(t, "sm")}${esc(t.name)}</div><div class="ph-pick-sum">${esc(t.summary)}</div></button>`).join("")}</div></div>`
-    : `<div class="ph-actions"><button type="button" class="ph-btn ph-btn-outline ph-btn-sm" data-clear>Clear</button><a class="ph-btn ph-btn-solid ph-btn-sm" href="#/explore">Add another</a></div>
+    : `<div class="ph-actions"><button type="button" class="ph-btn ph-btn-outline ph-btn-sm" data-clear>Clear</button><a class="ph-btn ph-btn-solid ph-btn-sm" href="${viewHref("explore")}">Add another</a></div>
       <div class="ph-table-wrap"><table class="ph-table"><thead><tr><th> </th>${ts.map(t => `<th scope="col"><a href="${toolHref(t.id)}">${logo(t, "sm")}${esc(t.name)}</a></th>`).join("")}</tr></thead><tbody>
       ${row("Stack role", ts.map(t => lbl("roles", t.role)))}${row("In one line", ts.map(t => t.summary))}${row("Best for", ts.map(t => t.bestFor))}
       ${row("Strengths", ts.map(t => t.strengths.join(" · ")))}${row("Limits", ts.map(t => t.limits.join(" · ")))}${row("Ask before you buy more", ts.map(t => t.questions.join(" ")))}
@@ -642,7 +670,7 @@ function mountGuide() {
     if (i === 3) body = panel("What do you actually know?", `<p class="ph-lede-sm">Declared is what they told you. Connected is history. Inferred is a guess — useful, but quieter.</p><div class="ph-opts">${D.taxonomy.signals.map(s => opt("gsig", s.id, s.label, s.blurb, g.contexts.includes(s.id))).join("")}</div><div class="ph-actions"><button type="button" class="ph-btn ph-btn-solid" data-gshow>Show matching strategies</button></div>`);
     if (i === 4) body = panel("Your first personalizations", `<p class="ph-lede-sm">Three situations that fit what you told us. Each one is a personalization you could actually try — not a campaign to leave on forever.</p>
       <div class="ph-grid-opps">${matches().map(o => `<a class="ph-card-plain" href="${oppHref(o.id)}"><div class="ph-card-kicker">${esc(lbl("stages", o.stage))} · ${esc(lbl("needs", o.situation))}</div><div class="ph-card-title">${esc(o.title)}</div><p>${esc(o.summary)}</p><span class="ph-card-go">Open the playbook ${arrowSmall}</span></a>`).join("")}</div>
-      <div class="ph-actions"><a class="ph-btn ph-btn-solid" href="#/opportunities">Explore opportunities</a><button type="button" class="ph-btn ph-btn-outline" data-grestart>Start over</button></div>`);
+      <div class="ph-actions"><a class="ph-btn ph-btn-solid" href="${viewHref("opportunities")}">Explore opportunities</a><button type="button" class="ph-btn ph-btn-outline" data-grestart>Start over</button></div>`);
     paint(`${pageHero("Guided start", "Where customers get stuck, and what you could try.", "Four short questions. Then three personalizations that fit — quiet, a nudge, or going all in.")}
       <div class="ph-guide"><div class="ph-progress-bar"><div style="width:${(i + 1) / STEPS.length * 100}%"></div></div><p class="ph-small">${i + 1} of ${STEPS.length}</p>
       <ol class="ph-guide-steps">${STEPS.map((s, n) => `<li><button type="button" class="ph-pill${n === i ? " on" : ""}" data-gstep="${n}">${n + 1} ${s}</button></li>`).join("")}</ol>${body}</div>`);
@@ -681,7 +709,7 @@ function blueprints() {
       <div><div class="ph-gantt-track"><div class="ph-gantt-bar is-${r.tone}" style="left:${r.start / 12 * 100}%;width:${r.span / 12 * 100}%"></div></div><p class="ph-small">${esc(r.detail)}</p></div></div>`).join("")}</div></section>`;
 }
 function notFound() {
-  return `<div class="ph-404"><h1 class="ph-hero-h">That page isn’t here.</h1><p class="ph-lede-sm">The hub contains opportunity cards, an audit, tools, and blueprints. Try one of those.</p><a href="#/">Back to the hub</a></div>`;
+  return `<div class="ph-404"><h1 class="ph-hero-h">That page isn’t here.</h1><p class="ph-lede-sm">The hub contains opportunity cards, an audit, tools, and blueprints. Try one of those.</p><a href="${viewHref("home")}">Back to the hub</a></div>`;
 }
 
 /* ---------- global listeners ---------- */
