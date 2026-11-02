@@ -59,7 +59,7 @@ The test page mounts the generated hub nav above the embed, reads the local data
 ## Releasing
 
 ```bash
-git tag v1.0.2 && git push --tags
+git tag v1.0.3 && git push --tags
 ```
 
 Then bump the tag in the Webflow embed and publish. CSS is scoped under `#speero-personalization-hub`, so it cannot reach the rest of the page.

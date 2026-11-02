@@ -56,6 +56,8 @@ const byId = {};       // opportunities, tools, library by id
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const host = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } };
+// Source links come from Airtable: only absolute http(s) URLs become links.
+const safeUrl = u => { try { return /^https?:$/.test(new URL(u).protocol) ? u : null; } catch (e) { return null; } };
 const lbl = (k, id) => (T[k][id] || {}).label || "";
 const pad = n => String(n).padStart(2, "0");
 const oppHref = id => esc(CFG.opportunityBase ? CFG.opportunityBase + id : "#/opportunities/" + id);
@@ -478,7 +480,7 @@ function toolCard(t, explorer) {
   return `<article class="ph-card-tool"><div class="ph-card-role">${esc(lbl("roles", t.role))}</div>
     ${explorer ? `<h3>${esc(t.name)}</h3>` : `<div class="ph-card-tool-head">${logo(t)}<h3>${esc(t.name)}</h3></div>`}
     <p>${esc(t.summary)}</p>
-    ${t.source ? `<a class="ph-src" href="${esc(t.source.url)}" target="_blank" rel="noopener noreferrer">${explorer ? "Source: " : ""}${esc(host(t.source.url))}</a>` : ""}
+    ${t.source && safeUrl(t.source.url) ? `<a class="ph-src" href="${esc(t.source.url)}" target="_blank" rel="noopener noreferrer">${explorer ? "Source: " : ""}${esc(host(t.source.url))}</a>` : ""}
     ${explorer ? `<div class="ph-connected">${esc(t.connected)}</div>` : ""}
     <div class="ph-card-tool-foot"><a href="${toolHref(t.id)}">${explorer ? "View tool &amp; connections" : "View"}${arrowSmall}</a>${compareBox(t.id)}</div></article>`;
 }
@@ -520,7 +522,7 @@ function tool(t) {
     <a class="ph-back" href="#/explore">← The explorer</a>
     <div class="ph-tool-head">${logo(t, "lg")}<div><div class="ph-card-role">${esc(lbl("roles", t.role))}</div><h1 class="ph-display">${esc(t.name)}</h1></div></div>
     <p class="ph-lede">${esc(t.summary)}</p><p class="ph-small">${esc(t.connected)}</p>
-    ${t.source ? `<blockquote class="ph-claim"><div class="ph-claim-k">THE VENDOR’S CLAIM</div><p>“${esc(t.source.claim)}”</p><a href="${esc(t.source.url)}" target="_blank" rel="noopener noreferrer">${esc(host(t.source.url))}</a></blockquote>` : ""}
+    ${t.source && safeUrl(t.source.url) ? `<blockquote class="ph-claim"><div class="ph-claim-k">THE VENDOR’S CLAIM</div><p>“${esc(t.source.claim)}”</p><a href="${esc(t.source.url)}" target="_blank" rel="noopener noreferrer">${esc(host(t.source.url))}</a></blockquote>` : ""}
     <div class="ph-actions"><button type="button" class="ph-btn ph-btn-outline ph-btn-sm" data-toggle="${esc(t.id)}"${full && !on ? " disabled" : ""}${full ? ' aria-describedby="compare-limit"' : ""}>${on ? "Remove from compare" : "Add to compare"}</button><a class="ph-btn ph-btn-solid ph-btn-sm" href="#/compare">Open comparison</a></div>
     ${compareLimit()}
     <div class="ph-two"><section><h2>Where it’s strong</h2><ul class="ph-bullets">${t.strengths.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>
