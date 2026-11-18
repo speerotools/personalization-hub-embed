@@ -237,11 +237,18 @@ function route() {
    plain-HTML directory of every opportunity and tool, so crawlers and no-JS
    visitors get real content and real links. The embed hides them only once
    its own view has rendered, so a failed fetch leaves them readable, and the
-   page shows one H1: the current view's. */
+   page keeps one H1: the current view's. Hidden native H1s are swapped for a
+   plain element of the same class, so the rendered DOM has a single H1 too. */
 function hideNative() {
   document.querySelectorAll("[data-ph-native-head], [data-ph-native-dir]").forEach(el => {
     el.style.display = "none";
     el.setAttribute("aria-hidden", "true");
+    el.querySelectorAll("h1").forEach(h => {
+      const p = document.createElement("p");
+      p.className = h.className;
+      while (h.firstChild) p.appendChild(h.firstChild);
+      h.replaceWith(p);
+    });
   });
 }
 
